@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<img style="float: left;" src="{{url_for('static', filename='img/emblema.png')}}"/> <h1>  Аварийный доступ</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.id_austro.label }}<br>
+        {{ form.id_austro(class="form-control") }}<br>
+        {% for error in form.id_austro.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.password_austro.label }}<br>
+        {{ form.password_austro(class="form-control", type="password") }}<br>
+        {% for error in form.password_austro.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.id_captain.label }}<br>
+        {{ form.id_captain(class="form-control") }}<br>
+        {% for error in form.id_captain.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+    <p>
+        {{ form.password_captain.label }}<br>
+        {{ form.password_captain(class="form-control", type="password") }}<br>
+        {% for error in form.password_captain.errors %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endfor %}
+    </p>
+
+
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+{% endblock %}
