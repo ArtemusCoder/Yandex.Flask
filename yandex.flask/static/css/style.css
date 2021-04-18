@@ -1,0 +1,36 @@
+header {
+    background:rgba(255, 255, 255, 0.5);
+  padding:5px 0px;
+  font-size:52px;
+  top: 0px;
+  color:black;
+  border-bottom:1px solid rgba(0, 0, 0, 0.5);
+  text-align:center;
+  position:fixed;
+  z-index:999999;
+  width:100%;
+ -webkit-backdrop-filter:saturate(180%) blur(20px);
+backdrop-filter: saturate(180%) blur(20px);
+}
+
+.li-right{
+    float: right;
+    padding-right: 30px;
+}
+
+
+.container{
+  margin-top: 100px;
+}
+
+li{
+margin: 0 auto;
+    float: left;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+body{
+font-family: 'Montserrat', sans-serif;
+}
