@@ -18,12 +18,14 @@ def training(prof):
     else:
         return render_template('training2.html', title='Научные симуляторы')
 
+
 @app.route('/list_prof/<list>')
 def list_prof(list):
     if list == 'ul':
         return render_template('list.html', title='Список профессий', design=False)
     elif list == 'ol':
         return render_template('list.html', title='Список профессий', design=True)
+
 
 @app.route('/answer')
 @app.route('/auto_answer')
@@ -39,6 +41,7 @@ def auto_answer():
     param['ready'] = True
     return render_template('auto_answer.html', **param)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -46,12 +49,23 @@ def login():
         return redirect('/success')
     return render_template('login.html', title='Авторизация', form=form)
 
+
 @app.route('/distribution')
 def distribution():
     param = {}
     param['title'] = 'Размещение по каютам'
-    param['members'] = ['Ридли Скот', 'Энди Уир', 'Марк Уотни', 'Венката Капур', 'Тедди Сандерс', 'Шон Бин']
+    param['members'] = ['Ридли Скот', 'Энди Уир', 'Марк Уотни', 'Венката Капур', 'Тедди Сандерс',
+                        'Шон Бин']
     return render_template('distribution.html', **param)
+
+
+@app.route('/table/<sex>/<int:age>')
+def table(sex, age):
+    param = {}
+    param['title'] = 'Оформление каюты'
+    param['sex'] = sex
+    param['age'] = int(age)
+    return render_template('table.html', **param)
 
 
 if __name__ == '__main__':

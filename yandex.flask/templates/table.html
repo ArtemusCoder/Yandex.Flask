@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="text-align:center;">{{title}}</h1>
+<div class="table">
+    <table style="table-layout: fixed ;">
+        <tr>
+            {% if sex == 'female' and age >= 21%}
+            <th>fa2f2f</th>
+            {% elif sex == 'female' and age < 21%}
+            <th>f08686</th>
+            {% elif sex == 'male' and age < 21%}
+            <th>9486f0</th>
+            {% elif sex == 'male' and age >= 21%}
+            <th>3e25e5</th>
+            {% endif %}
+
+            <th>Эмблема</th>
+        </tr>
+        <tr>
+            {% if sex == 'female' and age >= 21%}
+            <td style="background-color: #fa2f2f; width=50%;"></td>
+            {% elif sex == 'female' and age < 21%}
+            <td style="background-color: #f08686; width=50%;"></td>
+            {% elif sex == 'male' and age < 21%}
+            <td style="background-color: #9486f0; min-width=50%;"></td>
+            {% elif sex == 'male' and age >= 21 %}
+            <td style="background-color: #3e25e5; width=50%;"></td>
+            {% endif %}
+
+            {% if sex == 'female' and age >= 21%}
+            <td> <img style="max-width: 50%;" src="{{url_for('static', filename='img/alien-adult.png')}}"/> </td>
+            {% elif sex == 'female' and age < 21%}
+            <td> <img style="max-width: 50%;" src="{{url_for('static', filename='img/alien-child.png')}}"/> </td>
+            {% elif sex == 'male' and age < 21%}
+            <td> <img style="max-width: 50%;" src="{{url_for('static', filename='img/alien-child.png')}}"/> </td>
+            {% elif sex == 'male' and age >= 21%}
+            <td> <img style="max-width: 50%;" src="{{url_for('static', filename='img/alien-adult.png')}}"/></td>
+            {% endif %}
+        </tr>
+    </table>
+</div>
+{% endblock %}
