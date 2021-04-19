@@ -46,3 +46,8 @@ font-family: 'Montserrat', sans-serif;
 .training img{
     max-width: 70%;
 }
+
+.carousel-inner img{
+    max-width: 100%;
+
+}

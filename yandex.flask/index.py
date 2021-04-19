@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, render_template, redirect
 from loginform import LoginForm
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -66,6 +67,23 @@ def table(sex, age):
     param['sex'] = sex
     param['age'] = int(age)
     return render_template('table.html', **param)
+
+
+@app.route('/gallery', methods=['GET', 'POST'])
+@app.route('/galery', methods=['GET', 'POST'])
+def gallery():
+    if request.method == 'GET':
+        files = os.listdir('static/img/gallery')
+        print(files)
+        param = {}
+        param['title'] = 'Пейзажи Марса'
+        param['files'] = files
+        return render_template('gallery.html', **param)
+    elif request.method == 'POST':
+        files = os.listdir('static/img/gallery')
+        f = request.files['file']
+        f.save(f'static/img/gallery/{len(files) + 1}.jpg')
+        return "Форма отправлена"
 
 
 if __name__ == '__main__':
