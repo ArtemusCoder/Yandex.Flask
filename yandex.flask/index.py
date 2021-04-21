@@ -1,6 +1,9 @@
 from flask import Flask, url_for, request, render_template, redirect
 from loginform import LoginForm
 import os
+from data import db_session
+from data.users import User
+from data.jobs import Jobs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -9,7 +12,10 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', title='Заготовка')
+    db_session.global_init("db/database.db")
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Jobs)
+    return render_template("index.html", jobs=jobs)
 
 
 @app.route('/training/<prof>')
@@ -84,6 +90,11 @@ def gallery():
         f = request.files['file']
         f.save(f'static/img/gallery/{len(files) + 1}.jpg')
         return "Форма отправлена"
+
+
+@app.route('/member')
+def member():
+    pass
 
 
 if __name__ == '__main__':
