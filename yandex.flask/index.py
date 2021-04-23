@@ -30,6 +30,7 @@ def index():
 
 
 @app.route('/addjob', methods=['GET', 'POST'])
+@login_required
 def addjob():
     db_session.global_init("db/database.db")
     db_sess = db_session.create_session()
