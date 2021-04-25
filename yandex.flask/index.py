@@ -98,6 +98,24 @@ def edit_job(id):
                            )
 
 
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def jobs_delete(id):
+    db_sess = db_session.create_session()
+    if current_user.id == 1:
+        job = db_sess.query(Jobs).filter(Jobs.id == id).first()
+    else:
+        job = db_sess.query(Jobs).filter(Jobs.id == id,
+                                          Jobs.user == current_user
+                                          ).first()
+    if job:
+        db_sess.delete(job)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 @app.route('/training/<prof>')
 def training(prof):
     if 'инженер' in prof or 'строитель' in prof:
