@@ -1,4 +1,6 @@
 from flask import Flask, request, render_template, redirect
+from werkzeug.exceptions import abort
+
 from forms.loginform import LoginForm
 import os
 from data import db_session
@@ -6,7 +8,7 @@ from data.users import User
 from data.jobs import Jobs
 from forms.user import RegisterForm
 from forms.job import JobAdd
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -42,10 +44,57 @@ def addjob():
             collaborators=form.collaborators.data,
             is_finished=form.is_finished.data
         )
-        db_sess.add(job)
+        current_user.job.append(job)
+        db_sess.merge(current_user)
         db_sess.commit()
         return redirect('/')
     return render_template('job_add.html', title='Добавление работы', form=form)
+
+
+@app.route('/job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_job(id):
+    db_session.global_init("db/database.db")
+    form = JobAdd()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        if current_user.id == 1:
+            job = db_sess.query(Jobs).filter(Jobs.id == id).first()
+        else:
+            job = db_sess.query(Jobs).filter(Jobs.id == id,
+                                             Jobs.user == current_user
+                                             ).first()
+        if job:
+            form.team_leader.data = job.team_leader
+            form.job.data = job.job
+            form.work_size.data = job.work_size
+            form.collaborators.data = job.collaborators
+            form.is_finished.data = job.is_finished
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        if current_user.id == 1:
+            job = db_sess.query(Jobs).filter(Jobs.id == id).first()
+        else:
+            job = db_sess.query(Jobs).filter(Jobs.id == id,
+                                             Jobs.user == current_user
+                                             ).first()
+        print(job)
+        if job:
+            job.team_leader = form.team_leader.data
+            job.job = form.job.data
+            job.work_size = form.work_size.data
+            job.collaborators = form.collaborators.data
+            job.is_finished = form.is_finished.data
+            db_sess.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('job_add.html',
+                           title='Редактирование работы',
+                           form=form
+                           )
 
 
 @app.route('/training/<prof>')
