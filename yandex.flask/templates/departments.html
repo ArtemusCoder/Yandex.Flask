@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="./" class="btn btn-primary">Работа</a>
+<h1 style="text-align: center;">Departments</h1>
+{% if current_user.is_authenticated %}
+    <a href="add_depart" class="btn btn-secondary">Добавить департамент</a>
+{% endif %}
+{% for item in jobs%}
+<div style="margin-bottom: 40px;">
+    <h2> Action # {{item.id}}</h2>
+    <table cellspacing="2" border="1" cellpadding="5" width="100%">
+        <tr>
+            <th>Title of department</th>
+            <th>Chief</th>
+            <th>Members</th>
+            <th>Department Email</th>
+        </tr>
+        <tr>
+            <td>{{ item.title.title() }}</td>
+            <td> {{ item.depart.surname }} {{ item.depart.name }}</td>
+            <td> {{ item.members }} </td>
+            <td> {{ item.email }} </td>
+        </tr>
+    </table>
+    {% if (current_user.is_authenticated and current_user == item.user) or current_user.id == 1 %}
+    <div>
+        <a href="/depart/{{ item.id }}" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/depart_delete/{{ item.id }}" class="btn btn-danger">
+            Удалить
+        </a>
+    </div>
+{% endif %}
+</div>
+{% endfor %}
+{% endblock %}
