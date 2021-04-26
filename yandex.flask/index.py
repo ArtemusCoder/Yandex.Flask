@@ -1,10 +1,10 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, make_response, jsonify
 from werkzeug.exceptions import abort
 
 from forms.loginform import LoginForm
 import os
 
-from data import db_session
+from data import db_session, jobs_api
 from data.users import User
 from data.jobs import Jobs
 from data.departments import Department
@@ -12,10 +12,15 @@ from data.departments import Department
 from forms.user import RegisterForm
 from forms.depart import DepartForm
 from forms.job import JobAdd
+from flask_restful import reqparse, abort, Api, Resource
 
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+import users_resource
 
 app = Flask(__name__)
+api = Api(app)
+api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -262,10 +267,10 @@ def add_depart():
     form = DepartForm()
     if form.validate_on_submit():
         depart = Department(
-            title = form.title.data,
-            chief = form.title.data,
-            members = form.members.data,
-            email = form.email.data
+            title=form.title.data,
+            chief=form.title.data,
+            members=form.members.data,
+            email=form.email.data
         )
         current_user.department.append(depart)
         db_sess.merge(current_user)
@@ -285,8 +290,8 @@ def edit_depart(id):
             depart = db_sess.query(Department).filter(Department.id == id).first()
         else:
             depart = db_sess.query(Department).filter(Department.id == id,
-                                             Department.user == current_user
-                                             ).first()
+                                                      Department.user == current_user
+                                                      ).first()
         if depart:
             form.title.data = depart.title
             form.chief.data = depart.chief
@@ -300,8 +305,8 @@ def edit_depart(id):
             depart = db_sess.query(Department).filter(Department.id == id).first()
         else:
             depart = db_sess.query(Department).filter(Department.id == id,
-                                             Department.user == current_user
-                                             ).first()
+                                                      Department.user == current_user
+                                                      ).first()
         if depart:
             depart.title = form.title.data
             depart.chief = form.chief.data
@@ -325,8 +330,8 @@ def depars_delete(id):
         depart = db_sess.query(Department).filter(Department.id == id).first()
     else:
         depart = db_sess.query(Department).filter(Department.id == id,
-                                         Department.user == current_user
-                                         ).first()
+                                                  Department.user == current_user
+                                                  ).first()
     if depart:
         db_sess.delete(depart)
         db_sess.commit()
@@ -335,5 +340,12 @@ def depars_delete(id):
     return redirect('/departments')
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
 if __name__ == '__main__':
+    db_session.global_init("db/database.db")
+    app.register_blueprint(jobs_api.blueprint)
     app.run(port=8080, host='127.0.0.1')
